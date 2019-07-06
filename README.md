@@ -4,7 +4,7 @@ This is an app to list github repositories and compare them side by side,
 you will be able to compare the issues, stars, forks and also see the last commit time.
 
 <p align="center">
-<img src="public/images/gitcompare.png" width="250" alt="Git compare" />
+<img src="public/images/gitcompare.png" width="600" alt="Git compare" />
 </p>
 
 ---
