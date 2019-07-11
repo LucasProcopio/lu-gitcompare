@@ -13,7 +13,7 @@ class Main extends React.Component {
     loading: false,
     repositoryError: false,
     repositoryInput: "",
-    repositories: []
+    repositories: localStorage.repositories ? JSON.parse(localStorage.repositories) : []
   };
 
   handleAddRepository = async e => {
@@ -28,9 +28,20 @@ class Main extends React.Component {
 
       repository.lastCommit = moment(repository.pushed_at).fromNow();
 
+
+      if (localStorage.repositories !== 'undefined') {
+        let repositoryList = JSON.parse(localStorage.repositories);
+        const newList = repositoryList.concat(repository);
+        localStorage.setItem('repositories', JSON.stringify(newList));
+
+      } else {
+        localStorage.setItem('repositories', JSON.stringify([repository]));
+      }
+
+
       this.setState({
         repositoryInput: "",
-        repositories: [...this.state.repositories, repository],
+        repositories: JSON.parse(localStorage.repositories),
         repositoryError: false
       });
     } catch (error) {
@@ -59,8 +70,8 @@ class Main extends React.Component {
             {this.state.loading ? (
               <i className="fa fa-spinner fa-pulse" />
             ) : (
-              "OK"
-            )}
+                "OK"
+              )}
           </button>
         </Form>
         <CompareList repositories={this.state.repositories} />
