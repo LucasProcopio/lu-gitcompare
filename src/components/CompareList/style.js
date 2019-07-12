@@ -16,6 +16,24 @@ export const Repository = styled.div`
   display: flex;
   flex-direction: column;
 
+  .action {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .delete {
+      color: #ff0000;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .sync {
+      color: #52d89f;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
+
   header {
     padding: 30px;
     display: flex;

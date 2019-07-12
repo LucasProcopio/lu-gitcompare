@@ -8,6 +8,10 @@ const CompareList = ({ repositories }) => {
     <Container>
       {repositories.map(repo => (
         <Repository key={repo.id}>
+          <div className="action">
+            <i className="fa fa-undo sync" />
+            <i className="fa fa-trash delete" />
+          </div>
           <header>
             <img src={repo.owner.avatar_url} alt={repo.owner.login} />
             <strong>{repo.name}</strong>

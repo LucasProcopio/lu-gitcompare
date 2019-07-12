@@ -13,8 +13,30 @@ class Main extends React.Component {
     loading: false,
     repositoryError: false,
     repositoryInput: "",
-    repositories: localStorage.repositories ? JSON.parse(localStorage.repositories) : []
+    repositories: this.getLocalStorageData()
   };
+
+  addToLocalStorage(repository) {
+    if (typeof localStorage.repositories !== "undefined") {
+      let repositoryList = JSON.parse(localStorage.repositories);
+      const newList = repositoryList.concat(repository);
+      localStorage.setItem("repositories", JSON.stringify(newList));
+    } else {
+      localStorage.setItem("repositories", JSON.stringify([repository]));
+    }
+
+    return JSON.parse(localStorage.repositories);
+  }
+
+  getLocalStorageData() {
+    return localStorage.repositories
+      ? JSON.parse(localStorage.repositories)
+      : [];
+  }
+
+  updateLocalStorageData(id) {}
+
+  deleteLocalStorageData(id) {}
 
   handleAddRepository = async e => {
     e.preventDefault();
@@ -28,20 +50,11 @@ class Main extends React.Component {
 
       repository.lastCommit = moment(repository.pushed_at).fromNow();
 
-
-      if (localStorage.repositories !== 'undefined') {
-        let repositoryList = JSON.parse(localStorage.repositories);
-        const newList = repositoryList.concat(repository);
-        localStorage.setItem('repositories', JSON.stringify(newList));
-
-      } else {
-        localStorage.setItem('repositories', JSON.stringify([repository]));
-      }
-
+      const repositoryList = this.addToLocalStorage(repository);
 
       this.setState({
         repositoryInput: "",
-        repositories: JSON.parse(localStorage.repositories),
+        repositories: repositoryList,
         repositoryError: false
       });
     } catch (error) {
@@ -70,8 +83,8 @@ class Main extends React.Component {
             {this.state.loading ? (
               <i className="fa fa-spinner fa-pulse" />
             ) : (
-                "OK"
-              )}
+              "OK"
+            )}
           </button>
         </Form>
         <CompareList repositories={this.state.repositories} />
