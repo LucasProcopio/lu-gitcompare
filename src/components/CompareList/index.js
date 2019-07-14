@@ -3,11 +3,29 @@ import PropTypes from "prop-types";
 
 import { Container, Repository } from "./style";
 
-const CompareList = ({ repositories }) => {
+const CompareList = ({
+  repositories,
+  update,
+  del,
+  updateLoading,
+  deleteLoading
+}) => {
   return (
     <Container>
       {repositories.map(repo => (
         <Repository key={repo.id}>
+          <div className="action">
+            {updateLoading ? (
+              <i className="fa fa-spinner fa-pulse sync" />
+            ) : (
+              <i className="fa fa-undo sync" onClick={() => update(repo.id)} />
+            )}
+            {deleteLoading ? (
+              <i className="fa fa-spinner fa-pulse sync" />
+            ) : (
+              <i className="fa fa-trash delete" onClick={() => del(repo.id)} />
+            )}
+          </div>
           <header>
             <img src={repo.owner.avatar_url} alt={repo.owner.login} />
             <strong>{repo.name}</strong>
@@ -47,7 +65,11 @@ CompareList.propTypes = {
       forks_count: PropTypes.number,
       lastCommit: PropTypes.string
     })
-  ).isRequired
+  ).isRequired,
+  update: PropTypes.func.isRequired,
+  del: PropTypes.func.isRequired,
+  updateLoading: PropTypes.bool,
+  deleteLoading: PropTypes.bool
 };
 
 export default CompareList;

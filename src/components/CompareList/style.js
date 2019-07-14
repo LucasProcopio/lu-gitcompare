@@ -4,17 +4,37 @@ export const Container = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-
   margin-top: 50px;
+  overflow-x: auto;
+  width: 80%;
 `;
 
 export const Repository = styled.div`
-  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
   background: #fff;
   border-radius: 3px;
   margin: 0 10px;
   display: flex;
   flex-direction: column;
+
+  .action {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .delete {
+      color: #ff0000;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .sync {
+      color: #000000;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
 
   header {
     padding: 30px;
