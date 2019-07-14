@@ -30,15 +30,15 @@ export const Form = styled.form`
     height: 55px;
     padding: 0 20px;
     margin-left: 10px;
-    background: #63f5b0;
+    background: #000000;
     color: #f1f1f1;
     border: 0;
     font-size: 20px;
     font-weight: bold;
     border-radius: 3px;
-
+    cursor: pointer;
     &:hover {
-      background: #52d89f;
+      background: #2f2f2f;
     }
   }
 `;

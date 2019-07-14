@@ -12,6 +12,8 @@ class Main extends React.Component {
   state = {
     loading: false,
     repositoryError: false,
+    loadUpdate: false,
+    loadDelete: false,
     repositoryInput: "",
     repositories: this.getLocalStorageData()
   };
@@ -19,12 +21,27 @@ class Main extends React.Component {
   addToLocalStorage(repository) {
     if (typeof localStorage.repositories !== "undefined") {
       let repositoryList = JSON.parse(localStorage.repositories);
+      let repoExists = false;
+
+      repositoryList.map(item => {
+        if (item.full_name === repository.full_name) {
+          repoExists = true;
+        }
+        return null;
+      });
+
+      if (repoExists) {
+        this.setState({ repositoryError: true });
+        return repositoryList;
+      }
+
       const newList = repositoryList.concat(repository);
       localStorage.setItem("repositories", JSON.stringify(newList));
     } else {
       localStorage.setItem("repositories", JSON.stringify([repository]));
     }
 
+    this.setState({ repositoryError: false });
     return JSON.parse(localStorage.repositories);
   }
 
@@ -34,9 +51,45 @@ class Main extends React.Component {
       : [];
   }
 
-  updateLocalStorageData(id) {}
+  async fetchRepository(repo) {
+    this.setState({ loadUpdate: true });
 
-  deleteLocalStorageData(id) {}
+    try {
+      const { data: repository } = await api.get(`/repos/${repo}`);
+      repository.lastCommit = moment(repository.pushed_at).fromNow();
+      return repository;
+    } catch (error) {
+      this.setState({ repositoryError: true });
+    } finally {
+      this.setState({ loadUpdate: false });
+    }
+
+    return false;
+  }
+
+  updateRepository(id) {
+    const list = JSON.parse(localStorage.repositories);
+    list.map((item, index) => {
+      if (item.id === id)
+        this.fetchRepository(item.full_name).then(result => {
+          list[index] = result;
+          localStorage.setItem("repositories", JSON.stringify(list));
+        });
+      return null;
+    });
+  }
+
+  deleteRepository(id) {
+    this.setState({ loadDelete: true });
+
+    const list = JSON.parse(localStorage.repositories);
+    const newList = list.filter(item => {
+      return item.id !== id;
+    });
+
+    localStorage.setItem("repositories", JSON.stringify(newList));
+    this.setState({ repositories: newList, loadDelete: false });
+  }
 
   handleAddRepository = async e => {
     e.preventDefault();
@@ -54,8 +107,7 @@ class Main extends React.Component {
 
       this.setState({
         repositoryInput: "",
-        repositories: repositoryList,
-        repositoryError: false
+        repositories: repositoryList
       });
     } catch (error) {
       console.log(error);
@@ -87,7 +139,13 @@ class Main extends React.Component {
             )}
           </button>
         </Form>
-        <CompareList repositories={this.state.repositories} />
+        <CompareList
+          repositories={this.state.repositories}
+          update={id => this.updateRepository(id)}
+          del={id => this.deleteRepository(id)}
+          updateLoading={this.state.loadUpdate}
+          deleteLoading={this.state.deleteLoading}
+        />
       </Container>
     );
   }
